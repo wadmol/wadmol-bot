@@ -4,6 +4,7 @@
 
 const logger = require('../utils/logger');
 const config = require('../utils/config');
+const TaggedHarrysHistory = require('../services/taggedHarrysHistory');
 
 const LobbyMonitor = {
     bot: null,
@@ -261,6 +262,13 @@ const LobbyMonitor = {
     handlePlayerJoin(username) {
         if (!this.isBot(username) && !this.isLobbyTransition) {
             this.players.add(username);
+            
+            // Update player history
+            TaggedHarrysHistory.updatePlayer({
+                name: username,
+                lobby: this.currentLobby
+            });
+
             if (!this.isInitializing) {
                 logger.info(`Player joined: ${username}`);
                 const embed = {
@@ -271,6 +279,9 @@ const LobbyMonitor = {
                     description: `🟢 ${username} joined the lobby`
                 };
                 this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
+                
+                // Update and send player list
+                this.updatePlayerList();
             }
         }
     },
@@ -282,6 +293,13 @@ const LobbyMonitor = {
     handlePlayerLeave(username) {
         if (!this.isBot(username) && !this.isLobbyTransition) {
             this.players.delete(username);
+            
+            // Update player history with last seen time
+            TaggedHarrysHistory.updatePlayer({
+                name: username,
+                lobby: null
+            });
+
             if (!this.isInitializing) {
                 logger.info(`Player left: ${username}`);
                 const embed = {
@@ -292,7 +310,22 @@ const LobbyMonitor = {
                     description: `🔴 ${username} left the lobby`
                 };
                 this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
+                
+                // Update and send player list
+                this.updatePlayerList();
             }
+        }
+    },
+
+    /**
+     * Update and send player list to Discord
+     */
+    updatePlayerList() {
+        try {
+            const embed = TaggedHarrysHistory.generateEmbed();
+            this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
+        } catch (error) {
+            logger.error('Error updating player list:', error);
         }
     },
 
@@ -353,4 +386,4 @@ const LobbyMonitor = {
     }
 };
 
-module.exports = LobbyMonitor; 
+module.exports = LobbyMonitor;

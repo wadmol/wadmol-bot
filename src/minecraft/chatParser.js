@@ -6,6 +6,7 @@ const logger = require('../utils/logger');
 const config = require('../utils/config');
 const { getRelativeTime, getFullDateTime, getTimeAndCountdown } = require('../utils/timestamp');
 const BoosterTracker = require('../services/boosterTracker');
+const TaggedHarrysHistory = require('../services/taggedHarrysHistory');
 
 const ChatParser = {
     // Chat message patterns
@@ -720,6 +721,18 @@ const ChatParser = {
 
         const [, prestige, level, guildTag, rank, player, content] = match;
 
+        // Update player history
+        TaggedHarrysHistory.updatePlayer({
+            name: player,
+            clanTag: guildTag,
+            prestige: prestige,
+            level: level,
+            lobby: this.lobbyMonitor.currentLobby
+        });
+
+        // Increment message count
+        TaggedHarrysHistory.incrementMessageCount(player);
+
         // Build player info string
         let playerInfo = `[${prestige}-${level}] `;
         if (guildTag) playerInfo += `[${guildTag}] `;
@@ -737,4 +750,4 @@ const ChatParser = {
     }
 };
 
-module.exports = ChatParser; 
+module.exports = ChatParser;
