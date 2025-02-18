@@ -71,7 +71,10 @@ function loadConfig() {
             playerListDelay: 5000,           // 5 seconds
             verificationCodeTTL: 300000,     // 5 minutes
             reconnectDelay: 10000,           // 10 seconds
-            commandCooldown: 5000            // 5 seconds
+            commandCooldown: 5000,           // 5 seconds
+            afkPreventionInterval: 600000,   // 10 minutes - new
+            maxReconnectAttempts: 10,         // increased from 5 - new
+            reconnectBackoffBase: 2000      // base delay for exponential backoff - new
         }
     };
 }

@@ -14,7 +14,8 @@ const LobbyMonitor = {
     isInitializing: false,
     lastLobbyStatus: 0,
     reconnectAttempts: 0,
-    MAX_RECONNECT_ATTEMPTS: 5,
+    MAX_RECONNECT_ATTEMPTS: config.timings.maxReconnectAttempts || 5,
+    isLobbyTransition: false,
 
     /**
      * Initialize the lobby monitor
@@ -25,6 +26,7 @@ const LobbyMonitor = {
         this.bot = bot;
         this.sendToDiscord = sendToDiscord;
         this.setupErrorHandlers();
+        this.setupAFKPrevention();
         this.reset();
 
         // Set up initial play command after spawn
@@ -107,7 +109,10 @@ const LobbyMonitor = {
         }
 
         this.reconnectAttempts++;
-        const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000); // Exponential backoff, max 30s
+        const delay = Math.min(
+            config.timings.reconnectBackoffBase * Math.pow(2, this.reconnectAttempts), 
+            60000 // max 1 minute
+        );
 
         logger.info(`Attempting to reconnect in ${delay / 1000}s (attempt ${this.reconnectAttempts}/${this.MAX_RECONNECT_ATTEMPTS})`);
 
@@ -172,6 +177,7 @@ const LobbyMonitor = {
      */
     async handleNewLobby(lobbyName) {
         logger.info(`Handling new lobby: ${lobbyName}`);
+        this.isLobbyTransition = true; // Set transition flag
         this.currentLobby = lobbyName;
         this.isInitializing = true;
         this.players.clear();
@@ -187,6 +193,7 @@ const LobbyMonitor = {
         setTimeout(() => {
             this.scanPlayers(true);
             this.isInitializing = false;
+            this.isLobbyTransition = false; // Clear transition flag
 
             // Send initial lobby status with debounce
             const now = Date.now();
@@ -252,7 +259,7 @@ const LobbyMonitor = {
      * @param {string} username - Username of joining player
      */
     handlePlayerJoin(username) {
-        if (!this.isBot(username)) {
+        if (!this.isBot(username) && !this.isLobbyTransition) {
             this.players.add(username);
             if (!this.isInitializing) {
                 logger.info(`Player joined: ${username}`);
@@ -273,7 +280,7 @@ const LobbyMonitor = {
      * @param {string} username - Username of leaving player
      */
     handlePlayerLeave(username) {
-        if (!this.isBot(username)) {
+        if (!this.isBot(username) && !this.isLobbyTransition) {
             this.players.delete(username);
             if (!this.isInitializing) {
                 logger.info(`Player left: ${username}`);
@@ -330,6 +337,19 @@ const LobbyMonitor = {
         this.players.clear();
         this.isInitializing = false;
         this.lastPlayCommand = 0;
+    },
+
+    // Add AFK prevention
+    setupAFKPrevention() {
+        setInterval(() => {
+            try {
+                // Send a harmless command to prevent AFK
+                this.bot.chat('/lobby');
+                logger.debug('Sent AFK prevention command');
+            } catch (error) {
+                logger.error('Error sending AFK prevention command:', error);
+            }
+        }, config.timings.afkPreventionInterval);
     }
 };
 

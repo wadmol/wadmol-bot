@@ -1,6 +1,11 @@
 const { spawn } = require('child_process');
 const path = require('path');
 
+// Constants for restart schedule
+const RESTART_INTERVAL_HOURS = 6;
+const MILLISECONDS_IN_HOUR = 60 * 60 * 1000;
+const RESTART_INTERVAL = RESTART_INTERVAL_HOURS * MILLISECONDS_IN_HOUR;
+
 function startBot() {
     console.log('Starting bot...');
     
@@ -24,6 +29,16 @@ function startBot() {
         console.error('Failed to start bot:', err);
         process.exit(1);
     });
+
+    return bot;
 }
 
-startBot(); 
+// Start the bot
+let botProcess = startBot();
+
+// Schedule periodic restarts
+setInterval(() => {
+    console.log('Performing scheduled restart...');
+    botProcess.kill('SIGTERM'); // Gracefully shutdown the bot
+    botProcess = startBot(); // Start a new instance
+}, RESTART_INTERVAL); 
