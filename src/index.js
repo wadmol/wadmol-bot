@@ -12,7 +12,7 @@ const LobbyMonitor = require('./minecraft/lobbyMonitor');
 const ChatParser = require('./minecraft/chatParser');
 const CommandBridge = require('./minecraft/commandBridge');
 const BoosterTracker = require('./services/boosterTracker');
-const { commands, commandData } = require('./discord/commands');
+const { commands, commandData } = require('./discord/commands/index');
 const PrivateMessenger = require('./discord/privateMessenger');
 
 // Create Discord client
@@ -81,11 +81,16 @@ async function sendToDiscord(channelId, message) {
  */
 async function initializeCommands() {
     try {
+        if (!commandData) {
+            throw new Error('commandData is undefined. Check your commands import.');
+        }
+        
         logger.info('Started refreshing application commands');
         await discordClient.application.commands.set(commandData);
         logger.info('Successfully reloaded application commands');
     } catch (error) {
         logger.error('Error refreshing application commands:', error);
+        logger.debug('Command data:', commandData);
     }
 }
 
