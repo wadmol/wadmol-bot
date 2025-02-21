@@ -1,1 +1,9 @@
-{}
+{
+  "bots": {
+    "type": "bots",
+    "player": "superbent",
+    "multiplier": 2,
+    "startTime": 1740132478072,
+    "expiryTime": "2025-02-21T10:37:58.072Z"
+  }
+}
