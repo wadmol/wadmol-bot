@@ -26,39 +26,83 @@ const discordClient = new Client({
     ]
 });
 
+// Add this at the top of the file
+let currentAccountIndex = 0;
+
 /**
  * Initialize the Minecraft bot
+ * @param {number} accountIndex - Index of the account to use
  * @returns {Promise<Object>} Mineflayer bot instance
  */
-async function initializeMinecraftBot() {
-    const bot = mineflayer.createBot({
-        host: config.minecraft.host,
-        username: config.minecraft.email,
-        password: config.minecraft.password,
-        auth: config.minecraft.auth,
-        version: config.minecraft.version
-    });
+async function initializeMinecraftBot(accountIndex = 0) {
+    const account = config.minecraft.accounts[accountIndex];
+    if (!account) {
+        throw new Error(`Account index ${accountIndex} not found`);
+    }
 
-    // Set up error handling
-    bot.on('error', error => {
-        logger.error('Minecraft bot error:', error);
-    });
+    // Clear any existing bot session
+    if (this.bot) {
+        this.bot.end();
+        delete this.bot;
+    }
 
-    bot.on('kicked', reason => {
-        logger.error('Minecraft bot kicked:', reason);
-        process.exit(1);
-    });
+    // Add authentication retry logic
+    let retries = 3;
+    while (retries > 0) {
+        try {
+            const bot = mineflayer.createBot({
+                host: config.minecraft.host,
+                username: account.email,
+                password: account.password,
+                auth: config.minecraft.auth,
+                version: config.minecraft.version,
+                checkTimeoutInterval: 30000
+            });
 
-    bot.on('end', () => {
-        logger.error('Minecraft bot disconnected');
-        process.exit(1);
-    });
+            // Add authentication event handlers
+            bot.on('login', () => {
+                logger.info(`Successfully authenticated with Microsoft account ${account.email}`);
+            });
 
-    // Wait for spawn
-    await new Promise(resolve => bot.once('spawn', resolve));
-    logger.info('Minecraft bot spawned');
+            bot.on('kicked', (reason) => {
+                logger.error(`Minecraft bot kicked. Reason: ${reason}`);
+                if (retries > 0) {
+                    logger.info(`Retrying authentication (${retries} attempts remaining)`);
+                    retries--;
+                    bot.end();
+                    return;
+                }
+                throw new Error(`Failed to authenticate after multiple attempts: ${reason}`);
+            });
 
-    return bot;
+            // Set up error handling
+            bot.on('error', error => {
+                logger.error('Minecraft bot error:', error);
+                if (error.message.includes('Invalid credentials')) {
+                    logger.error('Please verify your email and password in the .env file');
+                }
+            });
+
+            bot.on('end', () => {
+                logger.error('Minecraft bot disconnected');
+                process.exit(1);
+            });
+
+            // Wait for spawn
+            await new Promise(resolve => bot.once('spawn', resolve));
+            logger.info('Minecraft bot spawned');
+            return bot;
+
+        } catch (error) {
+            logger.error('Authentication error:', error);
+            if (retries > 0) {
+                logger.info(`Retrying authentication (${retries} attempts remaining)`);
+                retries--;
+                continue;
+            }
+            throw error;
+        }
+    }
 }
 
 /**
@@ -92,12 +136,17 @@ async function initializeCommands() {
 
 // Discord event handlers
 discordClient.once(Events.ClientReady, async () => {
+    if (this.initialized) return;
+    this.initialized = true;
     logger.info(`Discord bot logged in as ${discordClient.user.tag}`);
     await initializeCommands();
 
     try {
-        // Initialize Minecraft bot
-        const bot = await initializeMinecraftBot();
+        // Get account index from command line or default to 0
+        currentAccountIndex = process.argv[2] ? parseInt(process.argv[2]) : 0;
+        
+        // Initialize Minecraft bot with the selected account
+        const bot = await initializeMinecraftBot(currentAccountIndex);
 
         // Initialize services
         LobbyMonitor.initialize(bot, sendToDiscord);

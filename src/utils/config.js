@@ -7,6 +7,8 @@ const logger = require('./logger');
 const REQUIRED_ENV_VARS = [
     'MC_EMAIL',
     'MC_PASSWORD',
+    'MC_EMAIL_2',
+    'MC_PASSWORD_2',
     'DISCORD_TOKEN',
     'BOOSTERS_CHANNEL',
     'EVENTS_CHANNEL',
@@ -40,8 +42,16 @@ function loadConfig() {
 
     return {
         minecraft: {
-            email: process.env.MC_EMAIL,
-            password: process.env.MC_PASSWORD,
+            accounts: [
+                {
+                    email: process.env.MC_EMAIL,
+                    password: process.env.MC_PASSWORD
+                },
+                {
+                    email: process.env.MC_EMAIL_2,
+                    password: process.env.MC_PASSWORD_2
+                }
+            ],
             host: 'harrys.gg',
             version: '1.8.9',
             auth: 'microsoft'
