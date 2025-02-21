@@ -20,7 +20,8 @@ const REQUIRED_ENV_VARS = [
     'DISCORD_GUILD_ID',
     'GUILD_CHAT_CHANNEL',
     'GUILD_KILLS_CHANNEL',
-    'PRIVATE_MESSENGER_CHANNEL'
+    'PRIVATE_MESSENGER_CHANNEL',
+    'PLAYER_LIST_CHANNEL'
 ];
 
 /**
@@ -56,7 +57,8 @@ function loadConfig() {
                 prestigeAlerts: process.env.PRESTIGE_ALERTS_CHANNEL,
                 guildChat: process.env.GUILD_CHAT_CHANNEL,
                 guildKills: process.env.GUILD_KILLS_CHANNEL,
-                privateMessenger: process.env.PRIVATE_MESSENGER_CHANNEL
+                privateMessenger: process.env.PRIVATE_MESSENGER_CHANNEL,
+                playerList: process.env.PLAYER_LIST_CHANNEL
             },
             roles: {
                 events: process.env.EVENTS_ROLE_ID,
@@ -75,6 +77,11 @@ function loadConfig() {
             afkPreventionInterval: 600000,   // 10 minutes - new
             maxReconnectAttempts: 10,         // increased from 5 - new
             reconnectBackoffBase: 2000      // base delay for exponential backoff - new
+        },
+        logging: {
+            level: 'debug',
+            file: 'logs/bot.log',
+            console: true
         }
     };
 }

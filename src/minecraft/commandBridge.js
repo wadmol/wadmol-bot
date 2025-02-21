@@ -236,7 +236,7 @@ const CommandBridge = {
                 { name: 'Command', value: commandName, inline: true },
                 {
                     name: 'Time',
-                    value: getRelativeTime(new Date()),
+                    value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                     inline: true
                 }
             ]

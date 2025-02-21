@@ -4,7 +4,9 @@
 
 const logger = require('../utils/logger');
 const config = require('../utils/config');
-const TaggedHarrysHistory = require('../services/taggedHarrysHistory');
+const PlayerTracker = require('../services/playerTracker');
+const PlayerDataStore = require('../utils/playerDataStore');
+const ChatHandler = require('./chatHandler');
 
 const LobbyMonitor = {
     bot: null,
@@ -17,6 +19,8 @@ const LobbyMonitor = {
     reconnectAttempts: 0,
     MAX_RECONNECT_ATTEMPTS: config.timings.maxReconnectAttempts || 5,
     isLobbyTransition: false,
+    lobbyMessageId: null,
+    isScanning: false,
 
     /**
      * Initialize the lobby monitor
@@ -26,6 +30,10 @@ const LobbyMonitor = {
     initialize(bot, sendToDiscord) {
         this.bot = bot;
         this.sendToDiscord = sendToDiscord;
+        
+        // Initialize PlayerTracker
+        PlayerTracker.initialize(sendToDiscord);
+        
         this.setupErrorHandlers();
         this.setupAFKPrevention();
         this.reset();
@@ -42,6 +50,18 @@ const LobbyMonitor = {
                 this.sendPlayCommand();
             }
         }, config.timings.playCommandInterval);
+
+        // Listen for lobby change messages
+        this.bot.on('message', (message) => {
+            const text = message.toString().trim();
+            if (text.includes('Sending you to')) {
+                const lobbyName = text.match(/Sending you to (.+?)!/)?.[1];
+                if (lobbyName) {
+                    logger.debug(`Detected lobby change to: ${lobbyName}`);
+                    this.handleNewLobby(lobbyName);
+                }
+            }
+        });
 
         // Set up player tracking with error handling
         this.bot.on('playerJoined', (player) => {
@@ -89,11 +109,14 @@ const LobbyMonitor = {
 
         // Handle entity errors
         process.on('uncaughtException', (error) => {
-            if (error.message.includes('Cannot read properties of undefined (reading \'passengers\')')) {
-                logger.error('Entity passenger error caught, attempting to recover...');
+            logger.error('Uncaught exception:', error);
+            if (error.message.includes('Cannot read properties of undefined') || 
+                error.message.includes('passengers') || 
+                error.message.includes('entity')) {
+                logger.error('Entity-related error caught, attempting to recover...');
                 this.handleDisconnect('entity error');
             } else {
-                logger.error('Uncaught exception:', error);
+                logger.error('Critical uncaught exception, exiting...');
                 process.exit(1);
             }
         });
@@ -125,6 +148,12 @@ const LobbyMonitor = {
                 process.exit(1);
             }
         }, delay);
+
+        // Add automatic retry every 5 minutes after the initial reconnect logic
+        setTimeout(() => {
+            logger.info('Server might be down for updates. Retrying in 5 minutes...');
+            this.handleDisconnect('retry');
+        }, delay + 300000); // 5 minutes after the initial delay
     },
 
     /**
@@ -147,29 +176,51 @@ const LobbyMonitor = {
      * @returns {boolean} True if the player is a bot/NPC
      */
     isBot(username) {
+        logger.debug(`Checking if ${username} is a bot/NPC...`);
+
         // Don't filter out our own bot
-        if (username === this.bot.username) return false;
+        if (username === this.bot.username) {
+            logger.debug(`${username} is the bot itself, not a bot/NPC`);
+            return false;
+        }
 
         // Color code prefixes (§7, §e, etc.)
-        if (username.includes('§')) return true;
+        if (username.includes('§')) {
+            logger.debug(`${username} is a bot/NPC (contains color code)`);
+            return true;
+        }
 
         // CIT- pattern bots
-        if (username.startsWith('CIT-')) return true;
+        if (username.startsWith('CIT-')) {
+            logger.debug(`${username} is a bot/NPC (CIT- pattern)`);
+            return true;
+        }
 
         // NPC tags
-        if (username.includes('[NPC]')) return true;
+        if (username.includes('[NPC]')) {
+            logger.debug(`${username} is a bot/NPC (contains [NPC] tag)`);
+            return true;
+        }
 
         // Common bot name patterns
         const botPatterns = [
-            /^Bot/i,
-            /^NPC-/i,
-            /^vnL/i,
-            /^[A-Z0-9]{8}$/,  // Random character sequences
-            /^Pit(Bot|NPC)/i,
-            /-[a-f0-9]{12}$/  // Hex suffix pattern
+            /^Bot/i,          // Starts with "Bot"
+            /^NPC-/i,         // Starts with "NPC-"
+            /^vnL/i,          // Starts with "vnL"
+            /^[A-Z0-9]{8}$/,  // Random character sequences (e.g., "ABCD1234")
+            /^Pit(Bot|NPC)/i, // Starts with "PitBot" or "PitNPC"
+            /-[a-f0-9]{12}$/  // Hex suffix pattern (e.g., "Player-123abc456def")
         ];
 
-        return botPatterns.some(pattern => pattern.test(username));
+        // Check if the username matches any bot pattern
+        const isBot = botPatterns.some(pattern => pattern.test(username));
+        if (isBot) {
+            logger.debug(`${username} is a bot/NPC (matches bot pattern)`);
+        } else {
+            logger.debug(`${username} is not a bot/NPC`);
+        }
+
+        return isBot;
     },
 
     /**
@@ -177,11 +228,13 @@ const LobbyMonitor = {
      * @param {string} lobbyName - Name of the new lobby
      */
     async handleNewLobby(lobbyName) {
+        if (this.currentLobby === lobbyName) return; // Skip if lobby hasn't changed
         logger.info(`Handling new lobby: ${lobbyName}`);
+        this.currentLobby = lobbyName; // Update the current lobby
         this.isLobbyTransition = true; // Set transition flag
-        this.currentLobby = lobbyName;
-        this.isInitializing = true;
-        this.players.clear();
+        this.isInitializing = true; // Set initialization flag
+        this.players.clear(); // Clear player list
+        logger.debug(`Flags set: isLobbyTransition=${this.isLobbyTransition}, isInitializing=${this.isInitializing}`);
 
         // Toggle bots off if not done yet
         if (!this.hasToggledBots) {
@@ -193,15 +246,15 @@ const LobbyMonitor = {
         // Wait for player list to populate
         setTimeout(() => {
             this.scanPlayers(true);
-            this.isInitializing = false;
+            this.isInitializing = false; // Clear initialization flag
             this.isLobbyTransition = false; // Clear transition flag
+            logger.debug(`Flags cleared: isLobbyTransition=${this.isLobbyTransition}, isInitializing=${this.isInitializing}`);
 
-            // Send initial lobby status with debounce
-            const now = Date.now();
-            if (now - this.lastLobbyStatus >= 5000) { // 5-second debounce
-                this.sendLobbyStatus();
-                this.lastLobbyStatus = now;
-            }
+            // Send initial lobby status
+            this.sendLobbyStatus();
+
+            // Update player tracker
+            PlayerTracker.updatePlayerList();
         }, config.timings.playerListDelay);
     },
 
@@ -210,6 +263,9 @@ const LobbyMonitor = {
      * @param {boolean} isInitialScan - Whether this is the initial scan
      */
     scanPlayers(isInitialScan = false) {
+        if (this.isScanning) return; // Skip if already scanning
+        this.isScanning = true;
+
         const currentPlayers = new Set();
         let changes = false;
 
@@ -218,8 +274,18 @@ const LobbyMonitor = {
                 currentPlayers.add(username);
                 if (!isInitialScan && !this.players.has(username)) {
                     changes = true;
+                    this.handlePlayerJoin(username);
                 }
             }
+        });
+
+        // Update player data for all current players
+        currentPlayers.forEach(username => {
+            PlayerDataStore.updatePlayer({
+                name: username,
+                lobby: this.currentLobby,
+                lastSeen: Date.now()
+            });
         });
 
         // Only process joins/leaves if not initial scan
@@ -242,6 +308,7 @@ const LobbyMonitor = {
         }
 
         this.players = currentPlayers;
+        this.isScanning = false;
 
         // Send updated lobby status if there were changes
         if (changes && !isInitialScan) {
@@ -260,29 +327,21 @@ const LobbyMonitor = {
      * @param {string} username - Username of joining player
      */
     handlePlayerJoin(username) {
-        if (!this.isBot(username) && !this.isLobbyTransition) {
+        if (!this.isBot(username) && !this.isInitializing && !this.isLobbyTransition) {
+            logger.debug(`Player joined: ${username}`);
             this.players.add(username);
             
-            // Update player history
-            TaggedHarrysHistory.updatePlayer({
+            // Update player data
+            PlayerDataStore.updatePlayer({
                 name: username,
-                lobby: this.currentLobby
+                lobby: this.currentLobby,
+                lastSeen: Date.now()
             });
 
-            if (!this.isInitializing) {
-                logger.info(`Player joined: ${username}`);
-                const embed = {
-                    color: 0x00ff00,
-                    author: {
-                        name: "Player Update"
-                    },
-                    description: `🟢 ${username} joined the lobby`
-                };
-                this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
-                
-                // Update and send player list
-                this.updatePlayerList();
-            }
+            logger.info(`Player joined: ${username}`);
+            ChatHandler.handleChat(`🟢 ${username} joined the lobby`);
+        } else {
+            logger.debug(`Ignoring join for ${username} (bot, during initialization, or lobby transition)`);
         }
     },
 
@@ -291,41 +350,28 @@ const LobbyMonitor = {
      * @param {string} username - Username of leaving player
      */
     handlePlayerLeave(username) {
-        if (!this.isBot(username) && !this.isLobbyTransition) {
+        if (!this.isBot(username) && !this.isInitializing && !this.isLobbyTransition) {
+            logger.debug(`Player left: ${username}`);
             this.players.delete(username);
             
-            // Update player history with last seen time
-            TaggedHarrysHistory.updatePlayer({
+            // Update player data
+            PlayerDataStore.updatePlayer({
                 name: username,
-                lobby: null
+                lobby: null,
+                lastSeen: Date.now()
             });
 
-            if (!this.isInitializing) {
-                logger.info(`Player left: ${username}`);
-                const embed = {
-                    color: 0xff0000,
-                    author: {
-                        name: "Player Update"
-                    },
-                    description: `🔴 ${username} left the lobby`
-                };
-                this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
-                
-                // Update and send player list
-                this.updatePlayerList();
-            }
-        }
-    },
-
-    /**
-     * Update and send player list to Discord
-     */
-    updatePlayerList() {
-        try {
-            const embed = TaggedHarrysHistory.generateEmbed();
+            logger.info(`Player left: ${username}`);
+            const embed = {
+                color: 0xff0000,
+                author: {
+                    name: "Player Update"
+                },
+                description: `🔴 ${username} left the lobby`
+            };
             this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
-        } catch (error) {
-            logger.error('Error updating player list:', error);
+        } else {
+            logger.debug(`Ignoring leave for ${username} (bot, during initialization, or lobby transition)`);
         }
     },
 
@@ -334,6 +380,26 @@ const LobbyMonitor = {
      */
     sendLobbyStatus() {
         const players = Array.from(this.players).sort();
+        const playerList = players.length > 0
+            ? players.map(player => `• ${player}`).join('\n')
+            : "No players in lobby";
+
+        // Split player list into chunks of 1024 characters
+        const playerChunks = [];
+        let currentChunk = '';
+        for (const player of players) {
+            const playerEntry = `• ${player}\n`;
+            if (currentChunk.length + playerEntry.length > 1024) {
+                playerChunks.push(currentChunk);
+                currentChunk = '';
+            }
+            currentChunk += playerEntry;
+        }
+        if (currentChunk.length > 0) {
+            playerChunks.push(currentChunk);
+        }
+
+        // Create embed with player chunks
         const embed = {
             color: 0x5865f2,
             title: "🎮 THE PIT - LOBBY STATUS",
@@ -347,18 +413,29 @@ const LobbyMonitor = {
                     name: "Players",
                     value: players.length.toString(),
                     inline: true
-                },
-                {
-                    name: "Current Players",
-                    value: players.length > 0
-                        ? players.map(player => `• ${player}`).join('\n')
-                        : "No players in lobby",
-                    inline: false
                 }
             ]
         };
 
-        this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
+        // Add player chunks as separate fields
+        playerChunks.forEach((chunk, index) => {
+            embed.fields.push({
+                name: index === 0 ? "Current Players" : "\u200b", // Use zero-width space for subsequent fields
+                value: chunk,
+                inline: false
+            });
+        });
+
+        // Send or update the lobby status message
+        this.sendToDiscord(config.discord.channels.lobby, { 
+            embeds: [embed], 
+            messageId: this.lobbyMessageId // Include the message ID to update the existing message
+        }).then(message => {
+            if (message) {
+                this.lobbyMessageId = message.id; // Update the message ID for future updates
+            }
+        });
+
         logger.info('Sent lobby status update');
     },
 

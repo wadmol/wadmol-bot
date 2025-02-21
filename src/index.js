@@ -14,6 +14,7 @@ const CommandBridge = require('./minecraft/commandBridge');
 const BoosterTracker = require('./services/boosterTracker');
 const { commands, commandData } = require('./discord/commands');
 const PrivateMessenger = require('./discord/privateMessenger');
+const ChatHandler = require('./minecraft/chatHandler');
 
 // Create Discord client
 const discordClient = new Client({
@@ -104,16 +105,16 @@ discordClient.once(Events.ClientReady, async () => {
         ChatParser.initialize(sendToDiscord, LobbyMonitor, CommandBridge);
         BoosterTracker.initialize();
         PrivateMessenger.initialize(discordClient, CommandBridge);
+        ChatHandler.initialize(sendToDiscord);
 
         // Set up chat handling
         bot.on('message', (message) => {
             const text = message.toString().trim();
             if (text) {
                 logger.debug(`Received chat message: ${text}`);
-                ChatParser.handleMessage(text);
+                ChatHandler.handleChat(text);
             }
         });
-
     } catch (error) {
         logger.error('Error during initialization:', error);
         process.exit(1);

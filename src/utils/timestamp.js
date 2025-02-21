@@ -19,7 +19,18 @@ const formatDiscordTimestamp = (date, format = 'f') => {
  * @returns {string} Relative time format
  */
 const getRelativeTime = (date) => {
-    return formatDiscordTimestamp(date, 'R');
+    const now = Date.now();
+    const diff = now - date;
+
+    if (diff < 60 * 1000) {
+        return `${Math.floor(diff / 1000)} sec`;
+    } else if (diff < 60 * 60 * 1000) {
+        return `${Math.floor(diff / (60 * 1000))} min`;
+    } else if (diff < 24 * 60 * 60 * 1000) {
+        return `${Math.floor(diff / (60 * 60 * 1000))} hr`;
+    } else {
+        return `${Math.floor(diff / (24 * 60 * 60 * 1000))} day`;
+    }
 };
 
 /**
@@ -51,10 +62,40 @@ const getTimeAndCountdown = (date, includeEmoji = true) => {
     return `${emoji}${getShortTime(date)} (${getRelativeTime(date)})`;
 };
 
+function sendToDiscord(channelId, messageData) {
+    const channel = discordClient.channels.cache.get(channelId);
+    if (!channel) {
+        logger.error(`Channel ${channelId} not found`);
+        return;
+    }
+
+    // Add timestamp to the embed if it's not already present
+    if (messageData.embeds && messageData.embeds.length > 0) {
+        messageData.embeds.forEach(embed => {
+            if (!embed.timestamp) {
+                embed.timestamp = new Date().toISOString();
+            }
+        });
+    }
+
+    // Send or update the message
+    if (messageData.messageId) {
+        return channel.messages.fetch(messageData.messageId)
+            .then(message => message.edit(messageData))
+            .catch(error => {
+                logger.error('Error updating message:', error);
+                return channel.send(messageData);
+            });
+    } else {
+        return channel.send(messageData);
+    }
+}
+
 module.exports = {
     formatDiscordTimestamp,
     getRelativeTime,
     getFullDateTime,
     getShortTime,
-    getTimeAndCountdown
+    getTimeAndCountdown,
+    sendToDiscord
 }; 

@@ -6,7 +6,7 @@ const logger = require('../utils/logger');
 const config = require('../utils/config');
 const { getRelativeTime, getFullDateTime, getTimeAndCountdown } = require('../utils/timestamp');
 const BoosterTracker = require('../services/boosterTracker');
-const TaggedHarrysHistory = require('../services/taggedHarrysHistory');
+const PlayerDataStore = require('../utils/playerDataStore');
 
 const ChatParser = {
     // Chat message patterns
@@ -38,7 +38,8 @@ const ChatParser = {
         verifyMessage: /(\w+) -> you: (\d{6})/,
         guildChat: /Guild > \[(\w+)\] (\w+): (.+)/,
         guildKill: /\[GKILLS\] \[(\d+)\] (\w+) Killed \[(\d+)\] (\w+)/,
-        lobbyChat: /^\[([A-Z]+)-(\d+)\] (?:\[([A-Z]{1,4})\])? (?:\[(VIP|MVP\+?)\])? (\w+): (.+)$/
+        lobbyChat: /\[([^\]]+)-(\d+)\](?: \[([^\]]+)\])?(?: \[([^\]]+)\])? ([^:]+): (.+)/,
+        commandResponse: /Command executed: (.+)/
     },
 
     // Event status emojis
@@ -110,6 +111,14 @@ const ChatParser = {
         try {
             logger.debug(`Processing chat message: ${message}`);
 
+            // Check if it's a command response
+            const commandMatch = message.match(this.patterns.commandResponse);
+            if (commandMatch) {
+                const [, command] = commandMatch;
+                logger.info(`Command executed: ${command}`);
+                return;
+            }
+
             // Add new handlers at the beginning
             if (this.handleLobbyChatMessage(message)) return;
             if (this.handleGuildChatMessage(message)) return;
@@ -171,69 +180,52 @@ const ChatParser = {
 
         if (!majorMatch && !minorMatch) return false;
 
-        // Store event info
-        if (!this.lastEventsCommand) {
-            this.lastEventsCommand = {
-                timestamp: Date.now(),
-                events: {}
-            };
-        }
-
-        const now = Date.now();
+        const embed = {
+            color: 0x00ff00, // Green color
+            title: '📅 Upcoming Events',
+            fields: []
+        };
 
         if (majorMatch) {
-            const timeMs = this.parseTimeToMs(majorMatch[2]);
-            this.lastEventsCommand.events.major = {
-                name: majorMatch[1],
-                time: majorMatch[2],
-                timestamp: now + timeMs
-            };
+            const [, name, time] = majorMatch;
+            const timestamp = this.parseEventTime(time);
+            embed.fields.push({
+                name: 'Next Major Event',
+                value: `${name}\n⌛ <t:${Math.floor(timestamp / 1000)}:R>`,
+                inline: false
+            });
         }
 
         if (minorMatch) {
-            const timeMs = this.parseTimeToMs(minorMatch[2]);
-            this.lastEventsCommand.events.minor = {
-                name: minorMatch[1],
-                time: minorMatch[2],
-                timestamp: now + timeMs
-            };
+            const [, name, time] = minorMatch;
+            const timestamp = this.parseEventTime(time);
+            embed.fields.push({
+                name: 'Next Minor Event',
+                value: `${name}\n⌛ <t:${Math.floor(timestamp / 1000)}:R>`,
+                inline: false
+            });
         }
 
-        // If we have both events or 500ms has passed, send the response
-        if (this.lastEventsCommand.events.major && this.lastEventsCommand.events.minor ||
-            Date.now() - this.lastEventsCommand.timestamp > 500) {
-
-            const embed = {
-                color: 0x00ff00,
-                title: '📅 Upcoming Events',
-                fields: []
-            };
-
-            if (this.lastEventsCommand.events.major) {
-                embed.fields.push({
-                    name: 'Next Major Event',
-                    value: `${this.lastEventsCommand.events.major.name}\n${getTimeAndCountdown(this.lastEventsCommand.events.major.timestamp)}`,
-                    inline: false
-                });
-            }
-
-            if (this.lastEventsCommand.events.minor) {
-                embed.fields.push({
-                    name: 'Next Minor Event',
-                    value: `${this.lastEventsCommand.events.minor.name}\n${getTimeAndCountdown(this.lastEventsCommand.events.minor.timestamp)}`,
-                    inline: false
-                });
-            }
-
-            // Send to bot commands channel
-            this.sendToDiscord(config.discord.channels.botCommands, { embeds: [embed] });
-            logger.info('Sent events command response to Discord');
-
-            // Reset stored events
-            this.lastEventsCommand = null;
-        }
-
+        // Send to bot-commands channel
+        this.sendToDiscord(config.discord.channels.botCommands, { embeds: [embed] });
         return true;
+    },
+
+    /**
+     * Add parseEventTime helper
+     * @param {string} timeString - Time string in the format of "d+m" or "d+s"
+     * @returns {number} Parsed timestamp in milliseconds
+     */
+    parseEventTime(timeString) {
+        const now = Date.now();
+        const minutesMatch = timeString.match(/(\d+)m/);
+        const secondsMatch = timeString.match(/(\d+)s/);
+
+        let milliseconds = 0;
+        if (minutesMatch) milliseconds += parseInt(minutesMatch[1]) * 60 * 1000;
+        if (secondsMatch) milliseconds += parseInt(secondsMatch[1]) * 1000;
+
+        return now + milliseconds;
     },
 
     /**
@@ -272,7 +264,7 @@ const ChatParser = {
 
         const embed = {
             color: isMajor ? 0xff0000 : 0xffff00,
-            description: `${this.eventEmojis[isMajor ? 'MAJOR' : 'MINOR']} ${isMajor ? 'MAJOR' : 'MINOR'} EVENT: ${name.trim()} (ended) ${this.eventEmojis.status.ended} ${getRelativeTime(timestamp)}`
+            description: `${this.eventEmojis[isMajor ? 'MAJOR' : 'MINOR']} ${isMajor ? 'MAJOR' : 'MINOR'} EVENT: ${name.trim()} (ended) ${this.eventEmojis.status.ended} <t:${Math.floor(timestamp / 1000)}:R>`
         };
 
         this.sendToDiscord(config.discord.channels.events, { embeds: [embed] });
@@ -395,7 +387,7 @@ const ChatParser = {
 
         const embed = {
             color: event.type === 'MAJOR' ? 0xff0000 : 0xffff00,
-            description: `${this.eventEmojis[event.type]} ${event.type} EVENT: ${event.name} (${event.status}) ${statusEmoji} ${getRelativeTime(event.timestamp)}`
+            description: `${this.eventEmojis[event.type]} ${event.type} EVENT: ${event.name} (${event.status}) ${statusEmoji} <t:${Math.floor(event.timestamp / 1000)}:R>`
         };
 
         // Add role ping for major events starting in 3 minutes
@@ -488,7 +480,7 @@ const ChatParser = {
                 { name: 'Type', value: type.toUpperCase(), inline: true },
                 {
                     name: 'Expires',
-                    value: getTimeAndCountdown(expiryTime),
+                    value: `<t:${Math.floor(expiryTime / 1000)}:R>`,
                     inline: true
                 }
             ]
@@ -578,7 +570,7 @@ const ChatParser = {
                     { name: 'Type', value: type.toUpperCase(), inline: true },
                     {
                         name: 'Expired',
-                        value: getRelativeTime(new Date()),
+                        value: `<t:${Math.floor(Date.now() / 1000)}:R>`,
                         inline: true
                     }
                 ]
@@ -700,7 +692,7 @@ const ChatParser = {
                 { name: 'Victim', value: `${victim} (Lvl ${victimLevel})`, inline: true },
                 {
                     name: 'Time',
-                    value: getRelativeTime(timestamp),
+                    value: `<t:${Math.floor(timestamp / 1000)}:R>`,
                     inline: true
                 }
             ]
@@ -721,17 +713,16 @@ const ChatParser = {
 
         const [, prestige, level, guildTag, rank, player, content] = match;
 
-        // Update player history
-        TaggedHarrysHistory.updatePlayer({
+        // Update player data
+        PlayerDataStore.updatePlayer({
             name: player,
-            clanTag: guildTag,
-            prestige: prestige,
-            level: level,
-            lobby: this.lobbyMonitor.currentLobby
+            prestige,
+            level: parseInt(level),
+            guild: guildTag,
+            rank,
+            lobby: this.lobbyMonitor.currentLobby,
+            lastSeen: Date.now()
         });
-
-        // Increment message count
-        TaggedHarrysHistory.incrementMessageCount(player);
 
         // Build player info string
         let playerInfo = `[${prestige}-${level}] `;
@@ -747,7 +738,7 @@ const ChatParser = {
 
         this.sendToDiscord(config.discord.channels.lobby, { embeds: [embed] });
         return true;
-    }
+    },
 };
 
 module.exports = ChatParser;
