@@ -1,0 +1,14 @@
+
+{
+  "ignore": [
+    "src/data/*",
+    "*.log",
+    "logs/*",
+    "src/services/boosterTracker.json",
+    "src/services/playerData.json",
+    "src/utils/playerDataStore.json"
+  ],
+  "watch": ["src"],
+  "ext": "js,json",
+  "exec": "node src/index.js"
+}
