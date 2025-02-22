@@ -50,13 +50,47 @@ async function initializeMinecraftBot(accountIndex = 0) {
     let retries = 3;
     while (retries > 0) {
         try {
+            logger.info(`Attempting Microsoft auth for account: ${account.email}`);
+            logger.debug('Auth config:', {
+                host: config.minecraft.host,
+                auth: config.minecraft.auth,
+                version: config.minecraft.version,
+                email: account.email ? account.email.substring(0, 3) + '***' : 'undefined',
+                passwordSet: account.password ? 'yes' : 'no'
+            });
+
+            // Enable detailed auth logging
+            process.env.DEBUG = 'minecraft-protocol:client:microsoft,prismarine-auth:*';
+
             const bot = mineflayer.createBot({
                 host: config.minecraft.host,
                 username: account.email,
-                password: account.password,
-                auth: config.minecraft.auth,
+                auth: 'microsoft',
                 version: config.minecraft.version,
-                checkTimeoutInterval: 30000
+                checkTimeoutInterval: 30000,
+                authTitle: "MinecraftBot",
+                flow: 'live',
+                onMsaCode: function(data) {
+                    logger.info('Microsoft authentication required');
+                    logger.info(`Please authenticate here: ${data.verification_uri}`);
+                    logger.info(`And enter code: ${data.user_code}`);
+                }
+            });
+
+            // Add auth event listeners
+            ['authenticationError', 'authenticationProgress', 'authenticationSuccess'].forEach(event => {
+                bot.on(event, (data) => {
+                    logger.debug(`Auth event ${event}:`, data);
+                });
+            });
+
+            // Add detailed auth logging
+            bot.on('authenticationError', (err) => {
+                logger.error('Authentication error details:', {
+                    error: err.message,
+                    errorName: err.name,
+                    stack: err.stack
+                });
             });
 
             // Add authentication event handlers
@@ -144,7 +178,7 @@ discordClient.once(Events.ClientReady, async () => {
     try {
         // Get account index from command line or default to 0
         currentAccountIndex = process.argv[2] ? parseInt(process.argv[2]) : 0;
-        
+
         // Initialize Minecraft bot with the selected account
         const bot = await initializeMinecraftBot(currentAccountIndex);
 
@@ -200,4 +234,4 @@ discordClient.on(Events.Error, error => {
 });
 
 // Start the Discord bot
-discordClient.login(config.discord.token); 
+discordClient.login(config.discord.token);

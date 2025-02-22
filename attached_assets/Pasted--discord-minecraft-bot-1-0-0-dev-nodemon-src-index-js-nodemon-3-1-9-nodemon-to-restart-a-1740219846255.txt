@@ -1,0 +1,373 @@
+> discord-minecraft-bot@1.0.0 dev
+> nodemon src/index.js
+
+[nodemon] 3.1.9
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/index.js`
+2025-02-22 10:10:44 info: PlayerTracker initialized
+2025-02-22 10:10:45 info: Discord bot logged in as ivy#8481
+2025-02-22 10:10:45 info: Started refreshing application commands
+2025-02-22 10:10:45 info: Successfully reloaded application commands
+2025-02-22 10:10:45 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:10:46 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:10:46 info: Minecraft bot spawned
+2025-02-22 10:10:46 info: Loaded booster state from file
+2025-02-22 10:10:46 info: Booster tracker initialized
+2025-02-22 10:11:16 info: Sent play command
+2025-02-22 10:11:16 info: Handling new lobby: mega1C
+2025-02-22 10:11:16 info: Toggled bots off
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:11:21 info: PlayerTracker initialized
+2025-02-22 10:11:22 info: Discord bot logged in as ivy#8481
+2025-02-22 10:11:22 info: Started refreshing application commands
+2025-02-22 10:11:22 info: Successfully reloaded application commands
+2025-02-22 10:11:22 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:11:24 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:11:24 info: Minecraft bot spawned
+2025-02-22 10:11:24 info: Loaded booster state from file
+2025-02-22 10:11:24 info: Booster tracker initialized
+[nodemon] restarting due to changes...
+2025-02-22 10:11:42 info: Player left: ManaTrip
+[nodemon] starting `node src/index.js`
+2025-02-22 10:11:43 info: PlayerTracker initialized
+2025-02-22 10:11:44 info: Discord bot logged in as ivy#8481
+2025-02-22 10:11:44 info: Started refreshing application commands
+2025-02-22 10:11:44 info: Successfully reloaded application commands
+2025-02-22 10:11:44 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:11:45 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:11:45 info: Minecraft bot spawned
+2025-02-22 10:11:45 info: Loaded booster state from file
+2025-02-22 10:11:45 info: Booster tracker initialized
+2025-02-22 10:12:15 info: Sent play command
+2025-02-22 10:12:15 info: Handling new lobby: mega1C
+2025-02-22 10:12:15 info: Toggled bots off
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:12:21 error: Error loading player data: Unexpected end of JSON input
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at PlayerDataStore.loadData (/home/runner/workspace/src/utils/playerDataStore.js:22:29)
+    at new PlayerDataStore (/home/runner/workspace/src/utils/playerDataStore.js:9:29)
+    at Object.<anonymous> (/home/runner/workspace/src/utils/playerDataStore.js:94:18)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+2025-02-22 10:12:21 info: PlayerTracker initialized
+2025-02-22 10:12:22 info: Discord bot logged in as ivy#8481
+2025-02-22 10:12:22 info: Started refreshing application commands
+2025-02-22 10:12:22 info: Successfully reloaded application commands
+2025-02-22 10:12:22 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:12:23 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:12:24 info: Minecraft bot spawned
+2025-02-22 10:12:24 info: Loaded booster state from file
+2025-02-22 10:12:24 info: Booster tracker initialized
+2025-02-22 10:12:54 info: Sent play command
+2025-02-22 10:12:54 info: Handling new lobby: mega1E
+2025-02-22 10:12:54 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:12:59 info: Scanned players: 9 players found
+2025-02-22 10:12:59 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:12:59 info: PlayerTracker initialized
+2025-02-22 10:13:00 info: Discord bot logged in as ivy#8481
+2025-02-22 10:13:00 info: Started refreshing application commands
+2025-02-22 10:13:00 info: Successfully reloaded application commands
+2025-02-22 10:13:00 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:13:02 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:13:02 info: Minecraft bot spawned
+2025-02-22 10:13:02 info: Loaded booster state from file
+2025-02-22 10:13:02 info: Booster tracker initialized
+2025-02-22 10:13:32 info: Sent play command
+2025-02-22 10:13:32 info: Handling new lobby: mega1C
+2025-02-22 10:13:32 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:13:37 info: Scanned players: 6 players found
+2025-02-22 10:13:37 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:13:38 info: PlayerTracker initialized
+2025-02-22 10:13:39 info: Discord bot logged in as ivy#8481
+2025-02-22 10:13:39 info: Started refreshing application commands
+2025-02-22 10:13:39 info: Successfully reloaded application commands
+2025-02-22 10:13:39 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:13:40 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:13:41 info: Minecraft bot spawned
+2025-02-22 10:13:41 info: Loaded booster state from file
+2025-02-22 10:13:41 info: Booster tracker initialized
+2025-02-22 10:14:11 info: Sent play command
+2025-02-22 10:14:11 info: Handling new lobby: mega1C
+2025-02-22 10:14:11 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:14:16 info: Scanned players: 6 players found
+2025-02-22 10:14:16 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:14:16 info: PlayerTracker initialized
+2025-02-22 10:14:17 info: Discord bot logged in as ivy#8481
+2025-02-22 10:14:17 info: Started refreshing application commands
+2025-02-22 10:14:17 info: Successfully reloaded application commands
+2025-02-22 10:14:17 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:14:19 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:14:19 info: Minecraft bot spawned
+2025-02-22 10:14:19 info: Loaded booster state from file
+2025-02-22 10:14:19 info: Booster tracker initialized
+2025-02-22 10:14:49 info: Sent play command
+2025-02-22 10:14:49 info: Handling new lobby: mega1C
+2025-02-22 10:14:49 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:14:54 info: Scanned players: 6 players found
+2025-02-22 10:14:54 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:14:55 info: PlayerTracker initialized
+2025-02-22 10:14:55 info: Discord bot logged in as ivy#8481
+2025-02-22 10:14:55 info: Started refreshing application commands
+2025-02-22 10:14:55 info: Successfully reloaded application commands
+2025-02-22 10:14:55 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:14:57 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:14:57 info: Minecraft bot spawned
+2025-02-22 10:14:57 info: Loaded booster state from file
+2025-02-22 10:14:57 info: Booster tracker initialized
+2025-02-22 10:15:27 info: Sent play command
+2025-02-22 10:15:27 info: Handling new lobby: mega1D
+2025-02-22 10:15:27 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:15:32 info: Scanned players: 7 players found
+2025-02-22 10:15:32 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:15:33 info: PlayerTracker initialized
+2025-02-22 10:15:33 info: Discord bot logged in as ivy#8481
+2025-02-22 10:15:33 info: Started refreshing application commands
+2025-02-22 10:15:34 info: Successfully reloaded application commands
+2025-02-22 10:15:34 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:15:35 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:15:35 info: Minecraft bot spawned
+2025-02-22 10:15:35 info: Loaded booster state from file
+2025-02-22 10:15:35 info: Booster tracker initialized
+2025-02-22 10:16:05 info: Sent play command
+2025-02-22 10:16:05 info: Handling new lobby: mega1C
+2025-02-22 10:16:05 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:16:10 info: Scanned players: 7 players found
+2025-02-22 10:16:10 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:16:11 info: PlayerTracker initialized
+2025-02-22 10:16:12 info: Discord bot logged in as ivy#8481
+2025-02-22 10:16:12 info: Started refreshing application commands
+2025-02-22 10:16:12 info: Successfully reloaded application commands
+2025-02-22 10:16:12 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:16:13 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:16:13 info: Minecraft bot spawned
+2025-02-22 10:16:13 info: Loaded booster state from file
+2025-02-22 10:16:13 info: Booster tracker initialized
+2025-02-22 10:16:43 info: Sent play command
+2025-02-22 10:16:44 info: Handling new lobby: mega1A
+2025-02-22 10:16:44 info: Toggled bots off
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:16:49 error: Error loading player data: Unexpected end of JSON input
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at PlayerDataStore.loadData (/home/runner/workspace/src/utils/playerDataStore.js:22:29)
+    at new PlayerDataStore (/home/runner/workspace/src/utils/playerDataStore.js:9:29)
+    at Object.<anonymous> (/home/runner/workspace/src/utils/playerDataStore.js:94:18)
+    at Module._compile (node:internal/modules/cjs/loader:1364:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1422:10)
+    at Module.load (node:internal/modules/cjs/loader:1203:32)
+    at Module._load (node:internal/modules/cjs/loader:1019:12)
+    at Module.require (node:internal/modules/cjs/loader:1231:19)
+    at require (node:internal/modules/helpers:177:18)
+2025-02-22 10:16:49 info: PlayerTracker initialized
+2025-02-22 10:16:50 info: Discord bot logged in as ivy#8481
+2025-02-22 10:16:50 info: Started refreshing application commands
+2025-02-22 10:16:50 info: Successfully reloaded application commands
+2025-02-22 10:16:50 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:16:52 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:16:52 info: Minecraft bot spawned
+2025-02-22 10:16:52 info: Loaded booster state from file
+2025-02-22 10:16:52 info: Booster tracker initialized
+2025-02-22 10:17:22 info: Sent play command
+2025-02-22 10:17:22 info: Handling new lobby: mega1C
+2025-02-22 10:17:22 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:17:27 info: Scanned players: 7 players found
+2025-02-22 10:17:27 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:17:28 info: PlayerTracker initialized
+2025-02-22 10:17:28 info: Discord bot logged in as ivy#8481
+2025-02-22 10:17:28 info: Started refreshing application commands
+2025-02-22 10:17:29 info: Successfully reloaded application commands
+2025-02-22 10:17:29 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:17:30 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:17:30 info: Minecraft bot spawned
+2025-02-22 10:17:30 info: Loaded booster state from file
+2025-02-22 10:17:30 info: Booster tracker initialized
+2025-02-22 10:17:37 info: Player joined: CloudyBeastt
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:17:37 info: PlayerTracker initialized
+2025-02-22 10:17:38 info: Discord bot logged in as ivy#8481
+2025-02-22 10:17:38 info: Started refreshing application commands
+2025-02-22 10:17:38 info: Successfully reloaded application commands
+2025-02-22 10:17:38 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:17:40 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:17:40 info: Minecraft bot spawned
+2025-02-22 10:17:40 info: Loaded booster state from file
+2025-02-22 10:17:40 info: Booster tracker initialized
+2025-02-22 10:17:42 info: Player left: 30193
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:17:42 info: PlayerTracker initialized
+2025-02-22 10:17:43 info: Discord bot logged in as ivy#8481
+2025-02-22 10:17:43 info: Started refreshing application commands
+2025-02-22 10:18:29 info: Successfully reloaded application commands
+2025-02-22 10:18:29 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:18:30 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:18:30 info: Minecraft bot spawned
+2025-02-22 10:18:30 info: Loaded booster state from file
+2025-02-22 10:18:30 info: Booster tracker initialized
+2025-02-22 10:19:00 info: Sent play command
+2025-02-22 10:19:01 info: Handling new lobby: mega1A
+2025-02-22 10:19:01 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:19:06 info: Scanned players: 7 players found
+2025-02-22 10:19:06 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:19:06 info: PlayerTracker initialized
+2025-02-22 10:19:07 info: Discord bot logged in as ivy#8481
+2025-02-22 10:19:07 info: Started refreshing application commands
+2025-02-22 10:19:07 info: Successfully reloaded application commands
+2025-02-22 10:19:07 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:19:09 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:19:09 info: Minecraft bot spawned
+2025-02-22 10:19:09 info: Loaded booster state from file
+2025-02-22 10:19:09 info: Booster tracker initialized
+[nodemon] restarting due to changes...
+2025-02-22 10:19:38 info: Player joined: superbent
+[nodemon] starting `node src/index.js`
+2025-02-22 10:19:38 info: PlayerTracker initialized
+2025-02-22 10:19:39 info: Discord bot logged in as ivy#8481
+2025-02-22 10:19:39 info: Started refreshing application commands
+2025-02-22 10:19:39 info: Successfully reloaded application commands
+2025-02-22 10:19:39 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:19:41 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:19:41 info: Minecraft bot spawned
+2025-02-22 10:19:41 info: Loaded booster state from file
+2025-02-22 10:19:41 info: Booster tracker initialized
+2025-02-22 10:19:42 info: Player joined: Sobbing_
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:19:42 info: PlayerTracker initialized
+2025-02-22 10:19:43 info: Discord bot logged in as ivy#8481
+2025-02-22 10:19:43 info: Started refreshing application commands
+2025-02-22 10:19:43 info: Successfully reloaded application commands
+2025-02-22 10:19:43 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:19:45 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:19:45 info: Minecraft bot spawned
+2025-02-22 10:19:45 info: Loaded booster state from file
+2025-02-22 10:19:45 info: Booster tracker initialized
+2025-02-22 10:20:15 info: Sent play command
+2025-02-22 10:20:15 info: Handling new lobby: mega1C
+2025-02-22 10:20:15 info: Toggled bots off
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:20:20 info: PlayerTracker initialized
+2025-02-22 10:20:20 info: Discord bot logged in as ivy#8481
+2025-02-22 10:20:20 info: Started refreshing application commands
+2025-02-22 10:20:21 info: Successfully reloaded application commands
+2025-02-22 10:20:21 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:20:22 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:20:22 info: Minecraft bot spawned
+2025-02-22 10:20:22 info: Loaded booster state from file
+2025-02-22 10:20:22 info: Booster tracker initialized
+2025-02-22 10:20:52 info: Sent play command
+2025-02-22 10:20:52 info: Handling new lobby: mega1C
+2025-02-22 10:20:52 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:20:57 info: Scanned players: 7 players found
+2025-02-22 10:20:57 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:20:58 info: PlayerTracker initialized
+2025-02-22 10:20:59 info: Discord bot logged in as ivy#8481
+2025-02-22 10:20:59 info: Started refreshing application commands
+2025-02-22 10:20:59 info: Successfully reloaded application commands
+2025-02-22 10:20:59 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:21:01 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:21:01 info: Minecraft bot spawned
+2025-02-22 10:21:01 info: Loaded booster state from file
+2025-02-22 10:21:01 info: Booster tracker initialized
+2025-02-22 10:21:31 info: Sent play command
+2025-02-22 10:21:31 info: Handling new lobby: mega1C
+2025-02-22 10:21:31 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:21:36 info: Scanned players: 5 players found
+2025-02-22 10:21:36 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:21:37 info: PlayerTracker initialized
+2025-02-22 10:21:38 info: Discord bot logged in as ivy#8481
+2025-02-22 10:21:38 info: Started refreshing application commands
+2025-02-22 10:21:39 info: Successfully reloaded application commands
+2025-02-22 10:21:39 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:21:41 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:21:41 info: Minecraft bot spawned
+2025-02-22 10:21:41 info: Loaded booster state from file
+2025-02-22 10:21:41 info: Booster tracker initialized
+2025-02-22 10:22:11 info: Sent play command
+2025-02-22 10:22:11 info: Handling new lobby: mega1C
+2025-02-22 10:22:11 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:22:16 info: Scanned players: 5 players found
+2025-02-22 10:22:16 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:22:17 info: PlayerTracker initialized
+2025-02-22 10:22:17 info: Discord bot logged in as ivy#8481
+2025-02-22 10:22:17 info: Started refreshing application commands
+2025-02-22 10:22:18 info: Successfully reloaded application commands
+2025-02-22 10:22:18 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:22:19 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:22:19 info: Minecraft bot spawned
+2025-02-22 10:22:19 info: Loaded booster state from file
+2025-02-22 10:22:19 info: Booster tracker initialized
+2025-02-22 10:22:34 info: Player joined: TulipsQwQ
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:22:35 info: PlayerTracker initialized
+2025-02-22 10:22:35 info: Discord bot logged in as ivy#8481
+2025-02-22 10:22:35 info: Started refreshing application commands
+2025-02-22 10:22:36 info: Successfully reloaded application commands
+2025-02-22 10:22:36 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:22:37 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:22:37 info: Minecraft bot spawned
+2025-02-22 10:22:37 info: Loaded booster state from file
+2025-02-22 10:22:37 info: Booster tracker initialized
+2025-02-22 10:22:41 info: Player left: TulipsQwQ
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:22:42 info: PlayerTracker initialized
+2025-02-22 10:22:42 info: Discord bot logged in as ivy#8481
+2025-02-22 10:22:42 info: Started refreshing application commands
+2025-02-22 10:23:18 info: Successfully reloaded application commands
+2025-02-22 10:23:18 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:23:20 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:23:20 info: Minecraft bot spawned
+2025-02-22 10:23:20 info: Loaded booster state from file
+2025-02-22 10:23:20 info: Booster tracker initialized
+2025-02-22 10:23:50 info: Sent play command
+2025-02-22 10:23:50 info: Handling new lobby: mega1C
+2025-02-22 10:23:50 info: Toggled bots off
+[nodemon] restarting due to changes...
+2025-02-22 10:23:55 info: Scanned players: 7 players found
+2025-02-22 10:23:55 info: Sent lobby status update
+[nodemon] starting `node src/index.js`
+2025-02-22 10:23:56 info: PlayerTracker initialized
+2025-02-22 10:23:57 info: Discord bot logged in as ivy#8481
+2025-02-22 10:23:57 info: Started refreshing application commands
+2025-02-22 10:23:57 info: Successfully reloaded application commands
+2025-02-22 10:23:57 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:23:58 info: Successfully authenticated with Microsoft account mcaccount_02@yahoo.com
+2025-02-22 10:23:58 info: Minecraft bot spawned
+2025-02-22 10:23:58 info: Loaded booster state from file
+2025-02-22 10:23:58 info: Booster tracker initialized

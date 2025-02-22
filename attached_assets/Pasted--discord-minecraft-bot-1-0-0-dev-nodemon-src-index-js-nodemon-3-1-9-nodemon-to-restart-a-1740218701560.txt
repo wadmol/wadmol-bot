@@ -1,0 +1,79 @@
+> discord-minecraft-bot@1.0.0 dev
+> nodemon src/index.js
+
+[nodemon] 3.1.9
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,cjs,json
+[nodemon] starting `node src/index.js`
+2025-02-22 10:02:38 info: PlayerTracker initialized
+2025-02-22 10:02:38 info: Discord bot logged in as ivy#8481
+2025-02-22 10:02:38 info: Started refreshing application commands
+2025-02-22 10:02:38 info: Successfully reloaded application commands
+2025-02-22 10:02:38 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+Sign in failed, try removing the password field
+
+XboxReplayError: Invalid credentials.
+    at Object.unauthorized (/home/runner/workspace/node_modules/@xboxreplay/errors/dist/index.js:25:74)
+    at /home/runner/workspace/node_modules/@xboxreplay/xboxlive-auth/dist/core/live/index.js:71:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async XboxTokenManager.doReplayAuth (/home/runner/workspace/node_modules/prismarine-auth/src/TokenManagers/XboxTokenManager.js:123:31)
+    at async MicrosoftAuthFlow.getXboxToken (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:128:20)
+    at async retry.xbl.forceRefresh (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:163:22)
+    at async retry (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:24:14)
+    at async MicrosoftAuthFlow.getMinecraftJavaToken (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:162:7)
+    at async Object.authenticate (/home/runner/workspace/node_modules/minecraft-protocol/src/client/microsoftAuth.js:22:58) {
+  __XboxReplay__: true,
+  details: { statusCode: 401, reason: 'UNAUTHORIZED' }
+}
+2025-02-22 10:02:42 error: Minecraft bot error: Invalid credentials.
+XboxReplayError: Invalid credentials.
+    at Object.unauthorized (/home/runner/workspace/node_modules/@xboxreplay/errors/dist/index.js:25:74)
+    at /home/runner/workspace/node_modules/@xboxreplay/xboxlive-auth/dist/core/live/index.js:71:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async XboxTokenManager.doReplayAuth (/home/runner/workspace/node_modules/prismarine-auth/src/TokenManagers/XboxTokenManager.js:123:31)
+    at async MicrosoftAuthFlow.getXboxToken (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:128:20)
+    at async retry.xbl.forceRefresh (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:163:22)
+    at async retry (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:24:14)
+    at async MicrosoftAuthFlow.getMinecraftJavaToken (/home/runner/workspace/node_modules/prismarine-auth/src/MicrosoftAuthFlow.js:162:7)
+    at async Object.authenticate (/home/runner/workspace/node_modules/minecraft-protocol/src/client/microsoftAuth.js:22:58)
+2025-02-22 10:02:42 error: Please verify your email and password in the .env file
+[nodemon] restarting due to changes...
+[nodemon] starting `node src/index.js`
+2025-02-22 10:03:10 info: PlayerTracker initialized
+2025-02-22 10:03:11 info: Discord bot logged in as ivy#8481
+2025-02-22 10:03:11 info: Started refreshing application commands
+2025-02-22 10:03:11 info: Successfully reloaded application commands
+2025-02-22 10:03:11 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:03:11 error: Authentication error: mineflayer.on is not a function
+TypeError: mineflayer.on is not a function
+    at /home/runner/workspace/src/index.js:65:28
+    at Array.forEach (<anonymous>)
+    at initializeMinecraftBot (/home/runner/workspace/src/index.js:64:20)
+    at Client.<anonymous> (/home/runner/workspace/src/index.js:177:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-02-22 10:03:11 info: Retrying authentication (3 attempts remaining)
+2025-02-22 10:03:11 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:03:11 error: Authentication error: mineflayer.on is not a function
+TypeError: mineflayer.on is not a function
+    at /home/runner/workspace/src/index.js:65:28
+    at Array.forEach (<anonymous>)
+    at initializeMinecraftBot (/home/runner/workspace/src/index.js:64:20)
+    at Client.<anonymous> (/home/runner/workspace/src/index.js:177:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-02-22 10:03:11 info: Retrying authentication (2 attempts remaining)
+2025-02-22 10:03:11 info: Attempting Microsoft auth for account: mcaccount_02@yahoo.com
+2025-02-22 10:03:11 error: Authentication error: mineflayer.on is not a function
+TypeError: mineflayer.on is not a function
+    at /home/runner/workspace/src/index.js:65:28
+    at Array.forEach (<anonymous>)
+    at initializeMinecraftBot (/home/runner/workspace/src/index.js:64:20)
+    at Client.<anonymous> (/home/runner/workspace/src/index.js:177:27)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-02-22 10:03:11 info: Retrying authentication (1 attempts remaining)
+2025-02-22 10:03:11 error: Error during initialization: Cannot read properties of undefined (reading 'on')
+TypeError: Cannot read properties of undefined (reading 'on')
+    at Object.setupErrorHandlers (/home/runner/workspace/src/minecraft/lobbyMonitor.js:93:18)
+    at Object.initialize (/home/runner/workspace/src/minecraft/lobbyMonitor.js:37:14)
+    at Client.<anonymous> (/home/runner/workspace/src/index.js:180:22)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
