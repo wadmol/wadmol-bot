@@ -54,7 +54,9 @@ async function initializeMinecraftBot(accountIndex = 0) {
             logger.debug('Auth config:', {
                 host: config.minecraft.host,
                 auth: config.minecraft.auth,
-                version: config.minecraft.version
+                version: config.minecraft.version,
+                email: account.email ? account.email.substring(0, 3) + '***' : 'undefined',
+                passwordSet: account.password ? 'yes' : 'no'
             });
             const bot = mineflayer.createBot({
                 host: config.minecraft.host,
