@@ -67,7 +67,13 @@ async function initializeMinecraftBot(accountIndex = 0) {
                 username: account.email,
                 auth: 'microsoft',
                 version: config.minecraft.version,
-                checkTimeoutInterval: 30000
+                checkTimeoutInterval: 30000,
+                authTitle: "MinecraftBot",
+                onMsaCode: function(data) {
+                    logger.info('Microsoft authentication required');
+                    logger.info(`Please authenticate here: ${data.verification_uri}`);
+                    logger.info(`And enter code: ${data.user_code}`);
+                }
             });
 
             // Add auth event listeners
