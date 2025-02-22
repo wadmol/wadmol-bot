@@ -51,6 +51,11 @@ async function initializeMinecraftBot(accountIndex = 0) {
     while (retries > 0) {
         try {
             logger.info(`Attempting Microsoft auth for account: ${account.email}`);
+            logger.debug('Auth config:', {
+                host: config.minecraft.host,
+                auth: config.minecraft.auth,
+                version: config.minecraft.version
+            });
             const bot = mineflayer.createBot({
                 host: config.minecraft.host,
                 username: account.email,
