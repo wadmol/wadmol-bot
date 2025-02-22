@@ -172,7 +172,7 @@ discordClient.once(Events.ClientReady, async () => {
     try {
         // Get account index from command line or default to 0
         currentAccountIndex = process.argv[2] ? parseInt(process.argv[2]) : 0;
-        
+
         // Initialize Minecraft bot with the selected account
         const bot = await initializeMinecraftBot(currentAccountIndex);
 
@@ -228,4 +228,4 @@ discordClient.on(Events.Error, error => {
 });
 
 // Start the Discord bot
-discordClient.login(config.discord.token); 
+discordClient.login(config.discord.token);
