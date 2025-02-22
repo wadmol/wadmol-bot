@@ -68,7 +68,14 @@ async function initializeMinecraftBot(accountIndex = 0) {
                 password: account.password,
                 auth: config.minecraft.auth,
                 version: config.minecraft.version,
-                checkTimeoutInterval: 30000
+                checkTimeoutInterval: 30000,
+                agent: {
+                    proxy: {
+                        host: 'proxy.example.com', // Replace with actual proxy
+                        port: 8080,               // Replace with actual port
+                        type: 'https'
+                    }
+                }
             });
 
             // Add auth event listeners
