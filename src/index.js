@@ -69,7 +69,7 @@ async function initializeMinecraftBot(accountIndex = 0) {
                 version: config.minecraft.version,
                 checkTimeoutInterval: 30000,
                 authTitle: "MinecraftBot",
-                flow: 'msa',
+                flow: 'live',
                 onMsaCode: function(data) {
                     logger.info('Microsoft authentication required');
                     logger.info(`Please authenticate here: ${data.verification_uri}`);
