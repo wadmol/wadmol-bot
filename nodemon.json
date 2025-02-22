@@ -1,12 +1,11 @@
 
 {
   "ignore": [
-    "src/data/*",
+    "src/data/**/*",
+    "src/services/**/*.json",
+    "src/utils/**/*.json",
     "*.log",
-    "logs/*",
-    "src/services/boosterTracker.json",
-    "src/services/playerData.json",
-    "src/utils/playerDataStore.json"
+    "logs/*"
   ],
   "watch": ["src"],
   "ext": "js,json",
