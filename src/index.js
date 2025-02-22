@@ -59,30 +59,23 @@ async function initializeMinecraftBot(accountIndex = 0) {
                 passwordSet: account.password ? 'yes' : 'no'
             });
 
-            // Enable Xbox Live auth logging
+            // Add auth event listeners before creating bot
+            const events = ['authenticationError', 'authenticationProgress', 'authenticationSuccess'];
+            events.forEach(event => {
+                mineflayer.on(event, (data) => {
+                    logger.debug(`Auth event ${event}:`, data);
+                });
+            });
+
+            // Add Xbox Live auth logging
             process.env.DEBUG = 'minecraft-protocol:client:microsoft,prismarine-auth:*';
-            
             const bot = mineflayer.createBot({
                 host: config.minecraft.host,
                 username: account.email,
                 password: account.password,
                 auth: config.minecraft.auth,
                 version: config.minecraft.version,
-                checkTimeoutInterval: 30000,
-                agent: {
-                    proxy: {
-                        host: 'proxy.example.com', // Replace with actual proxy
-                        port: 8080,               // Replace with actual port
-                        type: 'https'
-                    }
-                }
-            });
-
-            // Add auth event listeners
-            ['authenticationError', 'authenticationProgress', 'authenticationSuccess'].forEach(event => {
-                bot.on(event, (data) => {
-                    logger.debug(`Auth event ${event}:`, data);
-                });
+                checkTimeoutInterval: 30000
             });
 
             // Add detailed auth logging
