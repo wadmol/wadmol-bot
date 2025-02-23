@@ -53,7 +53,7 @@ async function initializeMinecraftBot(accountIndex = 0) {
             const bot = mineflayer.createBot({
                 host: config.minecraft.host,
                 username: account.email,
-                password: account.password,
+                //password: account.password, ---------------------------------------------------------------
                 auth: config.minecraft.auth,
                 version: config.minecraft.version,
                 checkTimeoutInterval: 30000

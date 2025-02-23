@@ -45,11 +45,11 @@ function loadConfig() {
             accounts: [
                 {
                     email: process.env.MC_EMAIL,
-                    password: process.env.MC_PASSWORD
-                },
+                    //password: process.env.MC_PASSWORD   ---------------------------------------------------------------
+                }, 
                 {
-                    email: process.env.MC_EMAIL_2,
-                    password: process.env.MC_PASSWORD_2
+                    email: process.env.MC_EMAIL_2, 
+                    //password: process.env.MC_PASSWORD_2 ---------------------------------------------------------------
                 }
             ],
             host: 'harrys.gg',
